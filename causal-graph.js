@@ -42,6 +42,12 @@ module.exports = class CausalGraph {
   vertices () {
     return Object.values(this._vertices);
   }
+  edges (from) {
+    return this._edges[from] || [];
+  }
+  backEdges (to) {
+    return this._backEdges[to] || [];
+  }
 };
 
 class Vertex {
@@ -51,13 +57,13 @@ class Vertex {
     this.graph = graph;
   }
   children () {
-
+    return this.graph.edges(this.label).map(label => this.graph.vertex(label));
   }
   descendants () {
 
   }
-  parent () {
-
+  parents () {
+    return this.graph.backEdges(this.label).map(label => this.graph.vertex(label));
   }
   ancestors () {
 

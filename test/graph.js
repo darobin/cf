@@ -26,13 +26,48 @@ describe('Causal Graph', () => {
     );
   });
   it('should manipulate edges', () => {
-    let cg = new CausalGraph().vertex('A', 1).vertex('B', 2).vertex('C', 3);;
-    cg.edge('A', 'B');
-    cg.edge('B', 'C');
+    let cg = new CausalGraph()
+      .vertex('A', 1)
+      .vertex('B', 2)
+      .vertex('C', 3)
+      .edge('A', 'B')
+      .edge('B', 'C')
+    ;
     assert.throws(
       () => cg.edge('C', 'A'),
       /Adding an edge from "C" to "A" created a cycle\.$/,
       'cannot introduce cycles'
     );
+    let g = cg
+      .vertex('D', 4)
+      .vertex('E', 5)
+      .edge('A', 'D')
+      .vertex('F', 6)
+      .vertex('G', 7)
+      .vertex('H', 8)
+      .edge('D', 'E')
+      .edge('E', 'F')
+      .edge('E', 'G')
+      .edge('E', 'H')
+      .edge('C', 'H')
+    ;
+    assert.equal(g, cg, 'chaining returns graph');
+    let aKids = cg.vertex('A').children()
+      , eKids = cg.vertex('E').children()
+      , aParents = cg.vertex('A').parents()
+      , eParents = cg.vertex('E').parents()
+      , hParents = cg.vertex('H').parents()
+      , toLabel = (arr) => arr.map(k => k.label).join(',')
+    ;
+    assert.equal(aKids.length, 2, 'A has two kids');
+    assert.equal(eKids.length, 3, 'E has three kids');
+    assert.equal(toLabel(aKids), 'B,D', 'A has kids: B, D');
+    assert.equal(toLabel(eKids), 'F,G,H', 'E has kids: F, G, H');
+    assert.equal(aParents.length, 0, 'A has no parents');
+    assert.equal(eParents.length, 1, 'E has one parent');
+    assert.equal(hParents.length, 2, 'H has ntwo parents');
+    assert.equal(toLabel(aParents), '', 'A is the root');
+    assert.equal(toLabel(eParents), 'D', 'E has parent D');
+    assert.equal(toLabel(hParents), 'E,C', 'H has parents E, C');
   });
 });
