@@ -7,6 +7,34 @@ module.exports = class CausalGraph {
     this._edges = {};
     this._backEdges = {};
   }
+  // XXX UNTESTED
+  // The JSON format is simple:
+  // {
+  //   label: {
+  //     value: 17,
+  //     edges: [A, B...]
+  //   }
+  // }
+  fromJSON (obj) {
+    let allEdges = [];
+    Object.keys(obj).forEach((label) => {
+      let { value = null, edges = [] } = obj[label];
+      this.vertex(label, value);
+      allEdges.push({ from: label, edges });
+    });
+    allEdges.forEach(({ from, edges }) => edges.forEach(to => this.edge(from, to)));
+  }
+  // XXX UNTESTED
+  toJSON () {
+    let obj = {};
+    this.vertices().forEach(v => {
+      obj[v.label] = {
+        value: v.value || null,
+        edges: this.edges(v.label),
+      };
+    });
+    return obj;
+  }
   vertex (label, value) {
     if (typeof value === 'undefined') return this._vertices[label] || null;
     if (this._vertices[label]) throw new Error(`Vertex "${label}" is already in the causal DAG.`);

@@ -1,7 +1,6 @@
 
 // XXX
-//  - Afford a simple way to build and manipulate a causal graph
-//  - Include a way to save/load one
+//  - Include a way to save/load a causal graph
 //  - Ability to viz a causal graph
 //  - Implement algorithms to:
 //    - find d-separability
