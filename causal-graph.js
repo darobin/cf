@@ -1,4 +1,5 @@
 
+let uniq = require('lodash.uniq');
 
 module.exports = class CausalGraph {
   constructor () {
@@ -60,12 +61,32 @@ class Vertex {
     return this.graph.edges(this.label).map(label => this.graph.vertex(label));
   }
   descendants () {
-
+    let desc = []
+      , kids = (label) => {
+          let edges = this.graph.edges(label);
+          if (edges.length) {
+            desc = desc.concat(edges);
+            edges.forEach(kids);
+          }
+        }
+    ;
+    kids(this.label);
+    return uniq(desc).map(label => this.graph.vertex(label));
   }
   parents () {
     return this.graph.backEdges(this.label).map(label => this.graph.vertex(label));
   }
   ancestors () {
-
+    let anc = []
+      , parents = (label) => {
+          let edges = this.graph.backEdges(label);
+          if (edges.length) {
+            anc = anc.concat(edges);
+            edges.forEach(parents);
+          }
+        }
+    ;
+    parents(this.label);
+    return uniq(anc).map(label => this.graph.vertex(label));
   }
 }

@@ -52,11 +52,19 @@ describe('Causal Graph', () => {
       .edge('C', 'H')
     ;
     assert.equal(g, cg, 'chaining returns graph');
-    let aKids = cg.vertex('A').children()
-      , eKids = cg.vertex('E').children()
-      , aParents = cg.vertex('A').parents()
-      , eParents = cg.vertex('E').parents()
-      , hParents = cg.vertex('H').parents()
+    let A = cg.vertex('A')
+      , E = cg.vertex('E')
+      , H = cg.vertex('H')
+      , aKids = A.children()
+      , eKids = E.children()
+      , aParents = A.parents()
+      , eParents = E.parents()
+      , hParents = H.parents()
+      , aDescendants = A.descendants()
+      , eDescendants = E.descendants()
+      , aAncestors = A.ancestors()
+      , eAncestors = E.ancestors()
+      , hAncestors = H.ancestors()
       , toLabel = (arr) => arr.map(k => k.label).join(',')
     ;
     assert.equal(aKids.length, 2, 'A has two kids');
@@ -65,9 +73,19 @@ describe('Causal Graph', () => {
     assert.equal(toLabel(eKids), 'F,G,H', 'E has kids: F, G, H');
     assert.equal(aParents.length, 0, 'A has no parents');
     assert.equal(eParents.length, 1, 'E has one parent');
-    assert.equal(hParents.length, 2, 'H has ntwo parents');
+    assert.equal(hParents.length, 2, 'H has two parents');
     assert.equal(toLabel(aParents), '', 'A is the root');
     assert.equal(toLabel(eParents), 'D', 'E has parent D');
     assert.equal(toLabel(hParents), 'E,C', 'H has parents E, C');
+    assert.equal(aDescendants.length, 7, 'A has seven descendants');
+    assert.equal(eDescendants.length, 3, 'E has three descendants');
+    assert.equal(toLabel(aDescendants), 'B,D,C,H,E,F,G', 'A has descendants: B, D, C, H, E, F, G');
+    assert.equal(toLabel(eDescendants), 'F,G,H', 'E has descendants: F, G, H');
+    assert.equal(aAncestors.length, 0, 'A has no ancestors');
+    assert.equal(eAncestors.length, 2, 'E has two ancestors');
+    assert.equal(hAncestors.length, 5, 'H has five ancestors');
+    assert.equal(toLabel(aAncestors), '', 'A is the root');
+    assert.equal(toLabel(eAncestors), 'D,A', 'E has ancestors D, A');
+    assert.equal(toLabel(hAncestors), 'E,C,D,A,B', 'H has ancestors: E, C, D, A, B');
   });
 });
