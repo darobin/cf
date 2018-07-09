@@ -26,6 +26,13 @@ describe('Causal Graph', () => {
     );
   });
   it('should manipulate edges', () => {
-
+    let cg = new CausalGraph().vertex('A', 1).vertex('B', 2).vertex('C', 3);;
+    cg.edge('A', 'B');
+    cg.edge('B', 'C');
+    assert.throws(
+      () => cg.edge('C', 'A'),
+      /Adding an edge from "C" to "A" created a cycle\.$/,
+      'cannot introduce cycles'
+    );
   });
 });

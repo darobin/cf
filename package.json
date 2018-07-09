@@ -11,6 +11,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "eslintConfig": {
+    "extends": "robin"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/darobin/cf.git"
